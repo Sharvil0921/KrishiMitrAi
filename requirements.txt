@@ -1,0 +1,12 @@
+flask
+flask-cors
+requests
+gTTS
+groq
+tf-keras
+opencv-python
+pillow
+numpy
+scikit-learn
+flask-login
+    

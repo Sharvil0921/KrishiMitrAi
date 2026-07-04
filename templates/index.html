@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KrishiMitra AI - Smart Farming Assistant</title>
+  <meta name="description" content="KrishiMitra AI — your multilingual AI farming assistant for crop advice, disease diagnosis, market prices and government schemes."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR BACKDROP -->
+  <div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR DRAWER -->
+  <nav class="sidebar" id="sidebar" aria-label="Navigation menu">
+    <div class="sb-profile">
+      <div class="sb-avatar">👨‍🌾</div>
+      <div class="sb-name">{{ farmer_name }}</div>
+      <div class="sb-tag">KrishiMitra Member</div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section-lbl">🌐 Language</div>
+    <div class="sb-langs">
+      <button id="slb-en" class="slb act" onclick="setSbLang('en',this)">🇬🇧 English</button>
+      <button id="slb-hi" class="slb" onclick="setSbLang('hi',this)"
+        style="font-family:'Noto Sans Devanagari',sans-serif">🇮🇳 हिंदी</button>
+      <button id="slb-mr" class="slb" onclick="setSbLang('mr',this)"
+        style="font-family:'Noto Sans Devanagari',sans-serif">🌿 मराठी</button>
+    </div>
+    <div class="sb-divider"></div>
+    <button class="sb-item" onclick="openHistorySb()">
+      <span class="sb-icon">📜</span> Chat History
+    </button>
+    <button class="sb-item" onclick="openWeatherSb()">
+      <span class="sb-icon">🌤️</span> Weather &amp; Crop Advice
+    </button>
+    <div class="sb-spacer"></div>
+    <div class="sb-divider"></div>
+    <a href="/logout" class="sb-item sb-logout">
+      <span class="sb-icon">⎋</span> Logout
+    </a>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <button class="hambtn" id="hambtn" onclick="toggleSidebar()" aria-label="Open menu" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo">🌾</div>
+    <div style="flex:1">
+      <div class="appname">Krishi<span>Mitra</span> AI</div>
+      <div class="appsub">🌾 Smart AI Farming Assistant</div>
+    </div>
+    <span class="farmer-name">👨‍🌾 {{ farmer_name }}</span>
+  </div>
+
+  <!-- COLLAPSIBLE SUGGESTIONS PANEL -->
+  <div class="sugg-panel" id="suggPanel">
+    <!-- Toggle Bar (always visible) -->
+    <div class="sugg-toggle-bar" id="suggToggleBar" onclick="toggleChips()">
+      <span class="sugg-toggle-label" id="suggToggleLabel">💡 Quick Ask: <span class="sugg-count" id="suggCount"></span></span>
+      <div class="sugg-bar-actions">
+        <button class="lbtn wth-btn sugg-action-btn" onclick="event.stopPropagation(); openWeatherSb()" title="Weather &amp; Crop Advice">🌤️ Weather</button>
+        <button class="lbtn wth-btn sugg-action-btn" onclick="event.stopPropagation(); openHistorySb()" title="Chat History">📜 History</button>
+        <span class="sugg-arrow" id="suggArrow">▲</span>
+      </div>
+    </div>
+    <!-- Chips Drawer -->
+    <div class="chips-drawer" id="chipsDrawer">
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY PANEL (hidden by default) -->
+  <div class="history-panel" id="historyPanel" style="display:none">
+    <div class="hist-header">
+      📜 Your Chat History
+      <button onclick="toggleHistory()" class="hist-close">✕</button>
+    </div>
+    <div class="hist-list" id="histList">Loading…</div>
+  </div>
+
+  <!-- WEATHER PANEL -->
+  <div class="weather-panel" id="weatherPanel" style="display:none">
+    <div class="weather-header">
+      <span>🌤️ Weather &amp; Crop Advisor</span>
+      <button onclick="closeWeatherSb()" class="hist-close">✕</button>
+    </div>
+    <div class="weather-body" id="weatherBody">
+      <div style="text-align:center;padding:20px;color:rgba(255,255,255,.45)">📍 Detecting location…</div>
+    </div>
+  </div>
+
+  <!-- CHAT WINDOW -->
+  <div class="chat" id="chat"></div>
+
+  <!-- INPUT AREA -->
+  <div class="inputarea">
+    <!-- Image preview strip -->
+    <div id="imgPreviewWrap" style="display:none;margin-bottom:8px;position:relative;width:fit-content">
+      <img id="imgPreview" src="" alt="preview"
+           style="height:72px;border-radius:10px;border:2px solid rgba(138,208,68,.4);object-fit:cover;display:block">
+      <button onclick="clearImage()" title="Remove image"
+        style="position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;
+               background:#e53935;border:none;color:#fff;font-size:11px;cursor:pointer;
+               display:flex;align-items:center;justify-content:center;line-height:1">✕</button>
+    </div>
+    <div class="irow">
+      <!-- Hidden file input: accepts gallery + camera -->
+      <input type="file" id="imgInput" accept="image/*" capture="environment"
+             style="display:none" onchange="handleImageSelect(event)">
+      <textarea class="ibox" id="inp"
+        placeholder="Ask about crops, diseases, market prices..."
+        rows="1" onkeydown="handleKey(event)"></textarea>
+      <button class="ibtn cambtn" id="camBtn" onclick="document.getElementById('imgInput').click()" title="Upload or capture photo">📷</button>
+      <button class="ibtn micbtn" id="micBtn" onclick="toggleVoice()">🎤</button>
+      <button class="ibtn sendbtn" onclick="send()">➤</button>
+    </div>
+    <div id="vstatus" style="font-size:.68rem;color:#e53935;margin-top:5px;text-align:center;min-height:14px"></div>
+  </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

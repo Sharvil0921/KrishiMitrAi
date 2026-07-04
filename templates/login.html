@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KrishiMitra AI — Farmer Login</title>
+  <meta name="description" content="Login or register to KrishiMitra AI farming assistant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --g1: #0d2210;
+      --g2: #1a3a1a;
+      --g3: #2d5a27;
+      --g4: #4a8c3f;
+      --g5: #6ab04c;
+      --g6: #8fd14f;
+      --earth: #c8a96e;
+      --gold: #f0c040;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--g1);
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(138, 208, 68, .2);
+      border-radius: 22px;
+      padding: 36px 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+    }
+
+    /* ── LOGO ── */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--g4), var(--g6));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .appname {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .appname span {
+      color: var(--g6);
+    }
+
+    .appsub {
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .55);
+      margin-top: 2px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 26px;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 11px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 9px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: rgba(255, 255, 255, .5);
+      transition: all .22s;
+    }
+
+    .tab.act {
+      background: linear-gradient(135deg, var(--g3), var(--g4));
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(74, 140, 63, .4);
+    }
+
+    /* ── FORM ── */
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .6);
+      font-weight: 600;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    input {
+      background: rgba(255, 255, 255, .07);
+      border: 1.5px solid rgba(255, 255, 255, .14);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: #fff;
+      font-size: .85rem;
+      font-family: 'Sora', sans-serif;
+      transition: border-color .2s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--g6);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, .3);
+    }
+
+    /* ── BUTTON ── */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--g4), var(--g6));
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Sora', sans-serif;
+      letter-spacing: .02em;
+      transition: opacity .2s;
+      margin-top: 4px;
+    }
+
+    .btn:hover {
+      opacity: .88;
+    }
+
+    .btn:active {
+      opacity: .75;
+    }
+
+    /* ── ERROR / SUCCESS ── */
+    .msg-box {
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: .78rem;
+      text-align: center;
+      display: none;
+    }
+
+    .msg-box.err {
+      background: rgba(229, 57, 53, .15);
+      border: 1px solid rgba(229, 57, 53, .35);
+      color: #ff7b79;
+    }
+
+    .msg-box.ok {
+      background: rgba(143, 209, 79, .15);
+      border: 1px solid rgba(143, 209, 79, .35);
+      color: #8fd14f;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      text-align: center;
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .3);
+      margin: 6px 0;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 1px;
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: .68rem;
+      color: rgba(255, 255, 255, .35);
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <div class="logo">🌾</div>
+      <div>
+        <div class="appname">Krishi<span>Mitra</span> AI</div>
+        <div class="appsub">Smart Farming Assistant — English | हिंदी | मराठी</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab act" id="tab-login" onclick="switchTab('login')">🔑 Login</div>
+      <div class="tab" id="tab-reg" onclick="switchTab('reg')">📝 Register</div>
+    </div>
+
+    <!-- Error / success banner -->
+    <div class="msg-box" id="msgBox"></div>
+
+    <!-- LOGIN FORM -->
+    <div class="form" id="loginForm">
+      <div class="field">
+        <label>📱 Mobile Number</label>
+        <input type="tel" id="l-mobile" maxlength="10" placeholder="10-digit mobile number" />
+      </div>
+      <div class="field">
+        <label>🔒 Password</label>
+        <input type="password" id="l-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <button class="btn" onclick="doLogin()">🚜 Login to KrishiMitra</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="form" id="regForm" style="display:none">
+      <div class="field">
+        <label>👨‍🌾 Your Name</label>
+        <input type="text" id="r-name" placeholder="e.g. Sharvil Deshmukh" />
+      </div>
+      <div class="field">
+        <label>📱 Mobile Number</label>
+        <input type="tel" id="r-mobile" maxlength="10" placeholder="10-digit mobile number" />
+      </div>
+      <div class="field">
+        <label>🔒 Password</label>
+        <input type="password" id="r-pass" placeholder="Min 6 characters"
+          onkeydown="if(event.key==='Enter')doRegister()" />
+      </div>
+      <button class="btn" onclick="doRegister()">🌱 Create My Account</button>
+    </div>
+
+    <div class="tagline">Your personal AI farming assistant 🌿</div>
+  </div>
+
+  <script>
+    function switchTab(t) {
+      document.getElementById('tab-login').classList.toggle('act', t === 'login');
+      document.getElementById('tab-reg').classList.toggle('act', t === 'reg');
+      document.getElementById('loginForm').style.display = t === 'login' ? 'flex' : 'none';
+      document.getElementById('regForm').style.display = t === 'reg' ? 'flex' : 'none';
+      hideMsg();
+    }
+
+    function showMsg(text, type) {
+      const b = document.getElementById('msgBox');
+      b.textContent = text;
+      b.className = 'msg-box ' + type;
+      b.style.display = 'block';
+    }
+    function hideMsg() {
+      document.getElementById('msgBox').style.display = 'none';
+    }
+
+    async function doLogin() {
+      const mobile = document.getElementById('l-mobile').value.trim();
+      const pass = document.getElementById('l-pass').value;
+      if (!mobile || !pass) { showMsg('Please fill in all fields.', 'err'); return; }
+      const res = await fetch('/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile, password: pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showMsg('Welcome back, ' + data.name + '! Redirecting…', 'ok');
+        setTimeout(() => window.location.href = '/', 800);
+      } else {
+        showMsg(data.error || 'Login failed. Try again.', 'err');
+      }
+    }
+
+    async function doRegister() {
+      const name = document.getElementById('r-name').value.trim();
+      const mobile = document.getElementById('r-mobile').value.trim();
+      const pass = document.getElementById('r-pass').value;
+      if (!name || !mobile || !pass) { showMsg('Please fill in all fields.', 'err'); return; }
+      const res = await fetch('/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, mobile, password: pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showMsg('Account created! Welcome, ' + data.name + '! Redirecting…', 'ok');
+        setTimeout(() => window.location.href = '/', 800);
+      } else {
+        showMsg(data.error || 'Registration failed.', 'err');
+      }
+    }
+  </script>
+</body>
+
+</html>
