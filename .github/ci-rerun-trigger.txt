@@ -1,0 +1,3 @@
+Triggering a GitHub Actions rerun by adding this file.
+
+Triggered by GitHub Copilot on 2026-10-17T11:30:00Z to restart the Pages build/deployment workflow.
