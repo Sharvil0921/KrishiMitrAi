@@ -1,0 +1,3 @@
+[submodule "Kisanmitr/Plant-Disease-Detection"]
+	path = Kisanmitr/Plant-Disease-Detection
+	url = https://github.com/manthan89-py/Plant-Disease-Detection.git
